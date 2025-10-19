@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kotak Saran - SMKN 1 Cidaun</title>
+  <style>
+    :root{--bg:#f6f8fb;--card:#ffffff;--accent:#2563eb;--muted:#6b7280}
+    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#eef2ff);padding:28px}
+    .wrap{max-width:920px;margin:0 auto}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    h1{margin:0;font-size:20px}
+    .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(15,23,42,.08)}
+    form{display:grid;gap:10px}
+    label{font-size:13px;color:var(--muted)}
+    input[type=text],textarea{width:100%;padding:10px;border:1px solid #e6e9ef;border-radius:8px;font-size:14px}
+    textarea{min-height:100px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:0;background:var(--accent);color:#fff;cursor:pointer;font-weight:600}
+    .btn.secondary{background:#eef2ff;color:var(--accent);border:1px solid rgba(37,99,235,.12)}
+    .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .search{flex:1}
+    .list{margin-top:16px;display:grid;gap:10px}
+    .item{padding:12px;border-radius:10px;border:1px solid #eef2ff;background:linear-gradient(180deg,#fff,#fbfdff)}
+    .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center}
+    .badge{background:#f1f5f9;padding:4px 8px;border-radius:999px;font-size:12px}
+    .small{font-size:13px;color:#0f172a}
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="card" style="padding:12px;display:flex;align-items:center;gap:12px">
+        <img src="download.png" alt="Logo SMKN 1 Cidaun" width="60" height="60" style="border-radius:8px" />
+        <div>
+          <h1>Kotak Saran SMKN 1 Cidaun</h1>
+          <div style="font-size:13px;color:var(--muted)">Kirimkan saran Anda — semua masukan akan diterima dengan baik.</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <form id="suggestionForm">
+        <div>
+          <label for="name">Nama (opsional)</label>
+          <input id="name" name="name" type="text" placeholder="Nama Anda atau kosongkan"/>
+        </div>
+        <div>
+          <label for="suggestion">Saran / Masukan</label>
+          <textarea id="suggestion" name="suggestion" placeholder="Tulis saranmu di sini..." required></textarea>
+        </div>
+        <div class="row">
+          <button type="submit" class="btn">Kirim Saran</button>
+          <button type="button" id="clearForm" class="btn secondary">Bersihkan</button>
+        </div>
+      </form>
+
+      <div id="message" style="margin-top:10px;color:var(--accent);font-size:14px;"></div>
+
+      <footer>
+        <small>Website ini siap diunggah ke GitHub Pages. Semua data dikirim ke Google Form / Backend (sesuaikan URL di bawah).</small>
+      </footer>
+    </section>
+  </div>
+
+  <script>
+    const endpoint = "https://script.google.com/macros/s/AKfycbyECtHCgOzGswJfCOmlkwxk98JG8TWfV49kuHnZ7842m62WgMHmorJD-GsXbPjUdh-H/exec";
+
+
+    const form = document.getElementById('suggestionForm');
+    const msg = document.getElementById('message');
+    const nameInput = document.getElementById('name');
+    const suggestionInput = document.getElementById('suggestion');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = 'Mengirim...';
+
+      const data = {
+        name: nameInput.value.trim() || 'Anonim',
+        suggestion: suggestionInput.value.trim()
+      };
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        msg.textContent = '✅ Terima kasih! Saran kamu sudah terkirim.';
+        form.reset();
+      } catch (error) {
+        msg.textContent = '❌ Gagal mengirim. Periksa koneksi atau URL endpoint.';
+      }
+    });
+
+    document.getElementById('clearForm').addEventListener('click', () => {
+      form.reset();
+      msg.textContent = '';
+    });
+  </script>
+</body>
+</html>
